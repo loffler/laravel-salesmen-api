@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CodelistController;
 use App\Http\Controllers\SalesmanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,3 +21,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('/salesmen', SalesmanController::class);
+
+Route::get('/codelists', [CodelistController::class, 'get']);
