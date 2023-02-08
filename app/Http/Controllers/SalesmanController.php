@@ -3,23 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateSalesmanRequest;
+use App\Http\Resources\SalesmanCollection;
 use App\Http\Resources\SalesmanResource;
 use App\Models\Salesman;
 use Illuminate\Http\Request;
 
 class SalesmanController extends Controller
 {
-    public function index()
+    public function index(Request $request, Salesman $salesman)
     {
-//        $salesmen = Salesman::orderBy('id','desc')->paginate(5);
-//        return view('salesmen.index', compact('salesmen'));
-        $salesmen = Salesman::all();
-        return SalesmanResource::collection($salesmen);
-    }
+        $sort = $request->input('sort');
+        $orderByColumn = ltrim($sort, '-');
+        $orderByDirection = $sort[0] === '-' ? 'DESC' : 'ASC';
 
-    public function create()
-    {
-        return view('salesmen.create');
+        $builder = Salesman::query();
+        if (in_array($orderByColumn, $salesman->sortable)) {
+            $builder->orderBy($orderByColumn, $orderByDirection);
+        }
+        return new SalesmanCollection($builder->paginate($request->input('per_page')));
     }
 
     public function store(CreateSalesmanRequest $request)
@@ -38,5 +39,10 @@ class SalesmanController extends Controller
     {
         $salesman->delete();
         return response(null, 204);
+    }
+
+    public function show(Salesman $salesman)
+    {
+        return new SalesmanResource($salesman);
     }
 }
