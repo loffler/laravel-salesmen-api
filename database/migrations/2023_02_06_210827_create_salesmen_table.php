@@ -14,17 +14,16 @@ return new class extends Migration
     public function up()
     {
         Schema::create('salesmen', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('first_name');
             $table->string('last_name');
-            $table->json('title');
-            $table->string('prosight_id');
-            $table->string('email');
-            $table->string('phone');
-//            $table->string('gender');
+            $table->json('titles_before')->nullable();
+            $table->json('titles_after')->nullable();
+            $table->string('prosight_id')->unique();
+            $table->string('email')->unique();
+            $table->string('phone')->nullable();
             $table->enum('gender', ['m', 'f']);
-//            $table->string('marital_status');
-            $table->enum('marital_status', ['single', 'married', 'divorced', 'widowed']);
+            $table->enum('marital_status', ['single', 'married', 'divorced', 'widowed'])->nullable();
             $table->timestamps();
         });
     }
