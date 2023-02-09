@@ -13,12 +13,14 @@ class SalesmanController extends Controller
     public function index(Request $request, Salesman $salesman)
     {
         $sort = $request->input('sort');
-        $orderByColumn = ltrim($sort, '-');
-        $orderByDirection = $sort[0] === '-' ? 'DESC' : 'ASC';
 
         $builder = Salesman::query();
-        if (in_array($orderByColumn, $salesman->sortable)) {
-            $builder->orderBy($orderByColumn, $orderByDirection);
+        if ($sort) {
+            $orderByColumn = ltrim($sort, '-');
+            $orderByDirection = $sort[0] === '-' ? 'DESC' : 'ASC';
+            if (in_array($orderByColumn, $salesman->sortable)) {
+                $builder->orderBy($orderByColumn, $orderByDirection);
+            }
         }
         return new SalesmanCollection($builder->paginate($request->input('per_page')));
     }
